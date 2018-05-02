@@ -1,8 +1,13 @@
 #ifndef ARRAYLIST_H
 #define ARRAYLIST_H
 
+#include "container.h"
+
+#define INIT_ARRAY_SIZE 16
+
 typedef struct {
-	int *container;
+	int *_container;
+	int _size;
 	int length;
 } ArrayList;
 
@@ -32,6 +37,8 @@ typedef struct {
 	void (*append)(ArrayList *arrayList, int e);
   
 	int (*pop)(ArrayList *arrayList);
+
+	void (*clear)(ArrayList *arrayList);
   
 	int (*length)(ArrayList *arrayList);
 
@@ -62,5 +69,8 @@ void arrayListAppend(ArrayList *arrayList, int e);
 
 int arrayListPop(ArrayList *arraylist);
 
+void arrayListClear(ArrayList  *arrayList);
+
 int arrayListLength(ArrayList *arrayList);
+
 #endif
