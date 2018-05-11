@@ -1,8 +1,6 @@
 /**
  * C collection Tester: test.c
  *
- * MIT License
- *
  * Copyright (c) 2018 Junsulime
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -49,12 +47,12 @@ int testArrayList() {
 	int i, code;
 	code = SUCCESS;
 
-	// isEmtpy function
+	/* isEmpty function test */
 	if (!op.isEmpty(&arr)) {
 		return FAILURE;
 	}
 	
-	// test append and get function
+	/* append, get function test */
 	for (i = 0; i < TEST_ITER; i++) {
 		op.append(&arr, i);
 	}
@@ -66,7 +64,7 @@ int testArrayList() {
 		}
 	}
 
-	// test pop function
+	/* pop function test */
 	for (i = TEST_ITER-1; i >= 0; i--) {
 		if (op.pop(&arr) != i) {
 			code = FAILURE;
@@ -74,7 +72,7 @@ int testArrayList() {
 		}
 	}
 
-	// set, get, clear and length function
+	/* get, set, clear, length function test */
 	op.append(&arr, 1);
 	op.set(&arr, 0, 3);
 	if (op.length(&arr) != 1) {
@@ -88,7 +86,7 @@ int testArrayList() {
 		return FAILURE;
 	}
 
-	// add and remove
+	/* add, remove function test */
 	op.add(&arr, 0, 1);
 	op.remove(&arr, 0);
 

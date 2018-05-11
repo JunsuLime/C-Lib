@@ -1,8 +1,6 @@
 /**
  * C collection ArrayList: arraylist.h
  *
- * MIT License
- *
  * Copyright (c) 2018 Junsulime
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
