@@ -30,6 +30,9 @@ int main() {
 	code = testArrayList();
 	printResult(code);
 
+    code = testQueue();
+    printResult(code);
+
 	return 0;
 }
 

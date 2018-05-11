@@ -34,6 +34,7 @@
 
 void printResult(int code);
 int testArrayList();
+int testQueue();
 
 #endif // TEST_H
 
