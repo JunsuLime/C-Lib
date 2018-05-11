@@ -1,5 +1,5 @@
 /**
- * C collection Tester: test.h
+ * C collection Base: container.h
  *
  * Copyright (c) 2018 Junsulime
  *
@@ -22,18 +22,10 @@
  * SOFTWARE.
  */
 
-#ifndef TEST_H
-#define TEST_H
+#define CONTAINER_H
+#ifdef CONTAINER_H
 
-#include "arraylist.h"
+#define TRUE 1
+#define FALSE 0
 
-#define SUCCESS 0 
-#define FAILURE 1
-
-#define TEST_ITER 1000000
-
-void printResult(int code);
-int testArrayList();
-
-#endif // TEST_H
-
+#endif	// CONTAINER_H
