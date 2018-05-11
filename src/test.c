@@ -23,6 +23,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "test.h"
 #include "arraylist.h"
@@ -75,6 +76,7 @@ int testArrayList() {
         }
         i++;
     }
+    free(iter);
     
 	/* pop function test */
 	for (i = TEST_ITER-1; i >= 0; i--) {
@@ -147,6 +149,24 @@ int testQueue() {
     if (op.length(&queue) != 0) {
         return FAILURE;
     }
+
+    for (i = 0; i < TEST_ITER; i++) {
+        op.enqueue(&queue, i);
+    }
+
+
+    /* iterator function test */
+    iter = op.iterator(&queue);
+    i = 0;
+    while (op.hasNext(iter)) {
+        if (i != op.next(iter)) {
+            return FAILURE;
+        }
+        i++;
+    }
+
+    free(iter);
+    op.free(&queue);
 
     return code;
 }

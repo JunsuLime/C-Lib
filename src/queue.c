@@ -25,23 +25,25 @@
 #include <stdlib.h>
 #include "queue.h"
 
-int queueInitialized = FALSE;
-QueueOp queueOperator;
+static int initialized = FALSE;
+static QueueOp operator;
 
 QueueOp queueOp() {
-    if (!queueInitialized) {
-        queueOperator.init = queueInit;
-        queueOperator.free = queueFree;
-        queueOperator.contain = queueContain;
-        queueOperator.isEmpty = queueIsEmpty;
-        queueOperator.iterator = queueIterator;
-        queueOperator.hasNext = queueHasNext;
-        queueOperator.next = queueNext;
-        queueOperator.enqueue = queueEnqueue;
-        queueOperator.dequeue = queueDequeue;
-        queueOperator.length = queueLength;
+    if (!initialized) {
+        operator.init = queueInit;
+        operator.free = queueFree;
+        operator.contain = queueContain;
+        operator.isEmpty = queueIsEmpty;
+        operator.iterator = queueIterator;
+        operator.hasNext = queueHasNext;
+        operator.next = queueNext;
+        operator.enqueue = queueEnqueue;
+        operator.dequeue = queueDequeue;
+        operator.length = queueLength;
+
+        initialized = TRUE;
     }
-    return queueOperator;
+    return operator;
 }
 
 void queueInit(Queue *queue) {
@@ -78,15 +80,21 @@ int queueIsEmpty(Queue *queue) {
 }
 
 QueueIter* queueIterator(Queue *queue) {
-    return 0;
+    QueueIter *iterator = (QueueIter*) malloc(sizeof(QueueIter));
+    iterator->_queue = queue;
+    iterator->current = queue->head->next;
+    
+    return iterator;
 }
 
 int queueHasNext(QueueIter *iterator) {
-    return 0;
+    return iterator->current != NULL;
 }
 
 int queueNext(QueueIter *iterator) {
-    return 0;
+    int item = iterator->current->item;
+    iterator->current = iterator->current->next;
+    return item;
 }
 
 void queueEnqueue(Queue *queue, int e) {
