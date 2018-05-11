@@ -26,6 +26,7 @@
 
 #include "test.h"
 #include "arraylist.h"
+#include "queue.h"
 
 void printResult(int code) {
 	switch (code) {
@@ -106,3 +107,46 @@ int testArrayList() {
 	return code;
 }
 
+int testQueue() {
+    int i;
+    int code = SUCCESS;
+
+    QueueOp op = queueOp();
+    Queue queue;
+    QueueIter *iter;
+
+    op.init(&queue);
+
+    /* enqueue, dequeue function test */
+    for (i = 0; i < TEST_ITER; i++) {
+        op.enqueue(&queue, i);
+    }
+
+    for (i = 0; i < TEST_ITER; i++) {
+        if (op.dequeue(&queue) != i) {
+            return FAILURE;
+        }
+    }   
+
+    /* contain, isEmpty, length function test */
+    op.enqueue(&queue, 1);
+    op.enqueue(&queue, 3);
+
+    if (op.contain(&queue, 2)) {
+        return FALSE;
+    }
+    if (!op.contain(&queue, 1)) {
+        return FALSE;
+    }
+    if (op.isEmpty(&queue)) {
+        return FALSE;
+    }
+    op.dequeue(&queue);
+    op.dequeue(&queue);
+
+    if (op.length(&queue) != 0) {
+        return FAILURE;
+    }
+
+    return code;
+}
