@@ -41,8 +41,9 @@ void printResult(int code) {
 int testArrayList() {
 	ArrayListOp op = arrayListOp();
 	ArrayList arr;
-
-	op.init(&arr);
+    ArrayListIter *iter;
+	
+    op.init(&arr);
 
 	int i, code;
 	code = SUCCESS;
@@ -64,6 +65,16 @@ int testArrayList() {
 		}
 	}
 
+    /* iterator test */
+    iter = arrayListIterator(&arr);
+    i = 0;
+    while (op.hasNext(iter)) {
+        if (op.next(iter) != i) {
+            return FAILURE;
+        }
+        i++;
+    }
+    
 	/* pop function test */
 	for (i = TEST_ITER-1; i >= 0; i--) {
 		if (op.pop(&arr) != i) {

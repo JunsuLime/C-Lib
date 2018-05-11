@@ -25,26 +25,28 @@
 #include <stdlib.h>
 #include "arraylist.h"
 
+int initialized;
+ArrayListOp operator;
 
 ArrayListOp arrayListOp() {
-	ArrayListOp *op;
-	op = (ArrayListOp*) malloc(sizeof(ArrayListOp));
-
-	op->init = arrayListInit;
-	op->free = arrayListFree;
-	op->contain = arrayListContain;
-	op->isEmpty = arrayListIsEmpty;
-	op->get = arrayListGet;
-	op->set = arrayListSet;
-	op->iterator = arrayListIterator;
-	op->remove = arrayListRemove;
-	op->add = arrayListAdd;
-	op->append = arrayListAppend;
-	op->pop = arrayListPop;
-	op->clear = arrayListClear;
-	op->length = arrayListLength;
-
-	return *op;
+    if (!initialized) {
+    	operator.init = arrayListInit;
+	    operator.free = arrayListFree;
+    	operator.contain = arrayListContain;
+	    operator.isEmpty = arrayListIsEmpty;
+    	operator.get = arrayListGet;
+	    operator.set = arrayListSet;
+	    operator.iterator = arrayListIterator;
+        operator.hasNext = arrayListHasNext;
+        operator.next = arrayListNext;
+    	operator.remove = arrayListRemove;
+	    operator.add = arrayListAdd;
+	    operator.append = arrayListAppend;
+    	operator.pop = arrayListPop;
+	    operator.clear = arrayListClear;
+	    operator.length = arrayListLength;
+    }
+	return operator;
 }
 
 void arrayListInit(ArrayList *arrayList) {
@@ -83,7 +85,19 @@ void arrayListSet(ArrayList *arrayList, int index, int e) {
 }
 
 ArrayListIter* arrayListIterator(ArrayList *arrayList) {
-	return 0;
+    ArrayListIter *iterator = (ArrayListIter*)malloc(sizeof(ArrayListIter));
+    iterator->_arrayList = arrayList;
+    iterator->current = 0;
+	
+    return iterator;
+}
+
+int arrayListHasNext(ArrayListIter* iterator) {
+    return iterator->current < iterator->_arrayList->length;
+}
+
+int arrayListNext(ArrayListIter* iterator) {
+    return iterator->_arrayList->_container[iterator->current++];
 }
 
 void arrayListRemove(ArrayList *arrayList, int index) {

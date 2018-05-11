@@ -49,7 +49,10 @@ typedef struct {
 } ArrayList;
 
 typedef struct {
-
+    // reference arrayList
+    ArrayList *_arrayList;
+    // current refer index
+    int current;
 } ArrayListIter;
 
 typedef struct {
@@ -66,6 +69,10 @@ typedef struct {
 	void (*set)(ArrayList* arrayList, int index, int e);
   
 	ArrayListIter* (*iterator)(ArrayList* arrayList);
+
+    int (*hasNext)(ArrayListIter* arrayListIter);
+
+    int (*next)(ArrayListIter* arrayListIter);
   
 	void (*remove)(ArrayList* arrayList, int index);
   
@@ -97,6 +104,10 @@ int arrayListGet(ArrayList *arrayList, int index);
 void arrayListSet(ArrayList *arrayList, int index, int e);
 
 ArrayListIter* arrayListIterator(ArrayList *arrayList);
+
+int arrayListHasNext(ArrayListIter *iterator);
+
+int arrayListNext(ArrayListIter *iterator);
 
 void arrayListRemove(ArrayList *arrayList, int index);
 
