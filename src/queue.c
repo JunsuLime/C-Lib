@@ -1,128 +1,105 @@
-/**
- * C collection Queue: queue.c
- *
- * Copyright (c) 2018 Junsulime
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-#include <stdlib.h>
 #include "queue.h"
+#include "common.h"
+#include <stdlib.h>
 
-static int initialized = FALSE;
-static QueueOp operator;
+static struct bundle *new_bundle() {
+    struct bundle *bundle = (struct bundle *)malloc(sizeof(struct bundle));
+    bundle->head = 0;
+    bundle->tail = 0;
+    bundle->next = NULL;
 
-QueueOp queueOp() {
-    if (!initialized) {
-        operator.init = queueInit;
-        operator.free = queueFree;
-        operator.contain = queueContain;
-        operator.isEmpty = queueIsEmpty;
-        operator.iterator = queueIterator;
-        operator.hasNext = queueHasNext;
-        operator.next = queueNext;
-        operator.enqueue = queueEnqueue;
-        operator.dequeue = queueDequeue;
-        operator.length = queueLength;
-
-        initialized = TRUE;
-    }
-    return operator;
+    return bundle;
 }
 
-void queueInit(Queue *queue) {
-    queue->head = (struct _Node*) malloc(sizeof(struct _Node));
+static void free_bundle(struct bundle *bundle) {
+    free(bundle);
+}
+
+struct queue *__instance() {
+    struct queue *queue = (struct queue *)malloc(sizeof(struct queue));
+    queue->head = new_bundle();
     queue->tail = queue->head;
-    queue->length = 0;
+
+    return queue;
 }
 
-void queueFree(Queue *queue) { 
-    struct _Node *current = queue->head;
-    struct _Node *next;
+void __enqueue(struct queue *queue, void *element) {
+    struct bundle *tail_bundle = queue->tail;
+    if (tail_bundle->tail != BUNDLE_SIZE) {
+        tail_bundle->array[tail_bundle->tail++] = element;
+        return;
+    }
 
-    while (current != NULL) {
+    queue->tail = new_bundle();
+    tail_bundle->next = queue->tail;
+    tail_bundle = tail_bundle->next;
+    tail_bundle->array[tail_bundle->tail++] = element;
+}
+
+void *__dequeue(struct queue *queue) {
+    struct bundle *head_bundle = queue->head;
+
+    void *data = head_bundle->array[head_bundle->head++];
+    if (head_bundle->head == BUNDLE_SIZE) {
+        if (queue->head == queue->tail) {
+            head_bundle->head = 0;
+            head_bundle->tail = 0;
+        } else {
+            queue->head = head_bundle->next;
+            free_bundle(head_bundle);
+        }
+    }
+    return data;
+}
+
+int __empty(struct queue *queue) {
+    return queue->head == queue->tail && queue->head->head == queue->head->tail;
+}
+
+void __foreach(struct queue *queue, void (*function)(void *data)) {
+    int i;
+    struct bundle *current = queue->head;
+
+    while (current) {
+        for (i = current->head; i < current->tail; i++) {
+            function(current->array[i]);
+        }
+        current = current->next;
+    }
+}
+
+void __free(struct queue *queue) {
+    struct bundle *current = queue->head;
+    struct bundle *next;
+
+    while (current) {
         next = current->next;
         free(current);
         current = next;
     }
 }
 
-int queueContain(Queue *queue, int e) {
-    struct _Node *current = queue->head->next;
+void __free_with_items(struct queue *queue) {
+    int i;
+    struct bundle *current = queue->head;
+    struct bundle *next;
 
-    while (current != NULL) {
-        if (current->item == e) {
-            return TRUE;
+    while (current) {
+        next = current->next;
+        for (i = current->head; i < current->tail; i++) {
+            free(current->array[i]);
         }
-        current = current->next;
+        free(current);
+        current = next;
     }
-    return FALSE;
 }
 
-int queueIsEmpty(Queue *queue) {
-    return queue->head == queue->tail;
-}
-
-QueueIter* queueIterator(Queue *queue) {
-    QueueIter *iterator = (QueueIter*) malloc(sizeof(QueueIter));
-    iterator->_queue = queue;
-    iterator->current = queue->head->next;
-    
-    return iterator;
-}
-
-int queueHasNext(QueueIter *iterator) {
-    return iterator->current != NULL;
-}
-
-int queueNext(QueueIter *iterator) {
-    int item = iterator->current->item;
-    iterator->current = iterator->current->next;
-    return item;
-}
-
-void queueEnqueue(Queue *queue, int e) {
-    struct _Node *newNode = (struct _Node*) malloc(sizeof(struct _Node));
-    newNode->next = NULL;
-    newNode->item = e;
-
-    queue->tail->next = newNode;
-    queue->tail = newNode;
-    queue->length++;
-}
-
-int queueDequeue(Queue *queue) {
-    struct _Node *first = queue->head->next;
-    queue->head->next = first->next;
-    if (first == queue->tail) {
-        queue->tail = queue->head;
-    }
-
-    int item = first->item;
-    free(first);
-
-    queue->length--;
-    return item;
-}
-
-int queueLength(Queue *queue) {
-    return queue->length;
-}
-
-
+const struct queueop queueop = {
+    .instance = __instance,
+    .enqueue = __enqueue,
+    .dequeue = __dequeue,
+    .empty = __empty,
+    .foreach = __foreach,
+    .free = __free,
+    .free_with_items = __free_with_items,
+};

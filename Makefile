@@ -1,35 +1,28 @@
-CC = gcc
-CXXFLAGS = -Wall -g -Os -I$(INC) -lpthread
+CC=gcc
+CFLAGS=-g -Wall
 
-TARGET = test.out
+SRC=src
+BIN=bin
+INCLUDES=includes
 
-SRCS := $(wildcard src/*.c)
-OBJS := $(SRCS:.cpp=.o)
-BIN = ./bin/
-INC = ./include/
-SRC = ./src/
-LIB = ./lib/
+TARGETS = list stack queue
+TEST_PROGRAMS := $(addsuffix _main.c, $(TARGETS))
+TEST_PROGRAMS := $(addprefix $(SRC)/, $(TEST_PROGRAMS))
+TEST_OBJECTS := $(TEST_PROGRAMS:.c=.o)
 
+MODULE_SOURCES := $(addsuffix .c, $(TARGETS))
+MODULE_SOURCES := $(addprefix $(SRC)/, $(MODULE_SOURCES))
+MODULE_OBJECTS := $(MODULE_SOURCES:.c=.o)
 
-TARGET: $(OBJS)
-	$(CC) $(CXXFLAGS) -o $(BIN)$(TARGET) $(OBJS) # -L$(INC)
+all: $(TARGETS)
 
-# test:
-# 	echo "Hello World"
-#
-# install: all
-# 	echo "Install is  called"
-# 
-# uninstall:
-# 	echo "Uninstall is called"
-# 
+$(TARGETS):	$(TEST_OBJECTS) $(MODULE_OBJECTS)
+	mkdir -p $(BIN)
+	$(foreach target, $(TARGETS), $(CC) $(CFLAGS) -I $(INCLUDES) -o $(BIN)/$(target) $(SRC)/$(target)_main.o $(SRC)/$(target).o;)
+
+.c.o:
+	$(CC) $(CFLAGS) -I $(INCLUDES) $^ -c -o $@
+
 clean:
-	# echo $(OBJS)
-	rm $(BIN)$(TARGET) 
-
-# documentation:
-# 	echo "make docs"
-# 
-# clean-documentation:
-# 	echo "clean docs"
-
+	rm $(SRC)/*.o
+	rm $(BIN)/*

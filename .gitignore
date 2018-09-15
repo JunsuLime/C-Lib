@@ -1,6 +1,6 @@
 ### C-Collections ###
 *.out
-
+bin
 
 # Created by https://www.gitignore.io/api/c,vim
 
