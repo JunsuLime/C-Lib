@@ -28,6 +28,17 @@ void *__get(arraylist *list, int i) {
     return list->array[i];
 }
 
+void __set(arraylist *list, int i, void *e) {
+    list->array[i] = e;
+}
+
+void __swap(arraylist *list, int i1, int i2) {
+    void *tmp;
+    tmp = list->array[i1];
+    list->array[i1] = list->array[i2];
+    list->array[i2] = tmp;
+}
+
 void __clear(arraylist *list) {
     list->size = INIT_ARRAY_SIZE;
     list->array = (void*)realloc(list->array, sizeof(void*) * INIT_ARRAY_SIZE);
@@ -76,6 +87,8 @@ const struct __arraylist_op arraylist_op = {
     .append = __append,
     .pop = __pop,
     .get = __get,
+    .set = __set,
+    .swap = __swap,
     .clear = __clear,
     .empty = __empty,
     .length = __length,

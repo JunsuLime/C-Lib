@@ -23,6 +23,8 @@ struct __arraylist_op {
     void (*append)(arraylist *list, void *e);
     void *(*pop)(arraylist *list);
     void *(*get)(arraylist *list, int i);
+    void (*set)(arraylist *list, int i, void *e);
+    void (*swap)(arraylist *list, int i1, int i2);
     void (*clear)(arraylist *list);
     int (*length)(arraylist *list);
     int (*empty)(arraylist *list);

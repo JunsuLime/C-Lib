@@ -11,66 +11,47 @@ void fill_arraylist(arraylist *list, int *array) {
     }
 }
 
-int test_clear_and_length(arraylist *list) {
+void test_clear_and_length(arraylist *list) {
     int array[DUMMY_SIZE];
 
-    if (arraylist_op.length(list) != 0) {
-        return FALSE;
-    }
+    VERIFY(arraylist_op.length(list), 0);
 
     fill_arraylist(list, array);
-
-    if (arraylist_op.length(list) != DUMMY_SIZE) {
-        return FALSE;
-    }
+    VERIFY(arraylist_op.length(list), DUMMY_SIZE);
 
     arraylist_op.clear(list);
-    if (arraylist_op.length(list) != 0) {
-        return FALSE;
-    }
-    return TRUE;
+    VERIFY(arraylist_op.length(list), 0);
 }
 
-int test_append_and_get(arraylist *list) {
+void test_append_and_get(arraylist *list) {
     int i;
     int array[DUMMY_SIZE];
    
     fill_arraylist(list, array);
 
     for (i = 0; i < DUMMY_SIZE; i++) {
-        if (*(int*)arraylist_op.get(list, i) != array[i]) {
-            return FALSE; 
-        }
+        VERIFY(*(int*)arraylist_op.get(list, i), array[i]);
     }
 
     arraylist_op.clear(list);
-    return TRUE;
 }
 
-int test_pop_and_empty(arraylist *list) {
+void test_pop_and_empty(arraylist *list) {
     int i;
     int array[DUMMY_SIZE];
 
     fill_arraylist(list, array);
-    if (arraylist_op.empty(list)) {
-        return FALSE;
-    }
+    VERIFY(arraylist_op.empty(list), FALSE);
 
     for (i = 0; i < DUMMY_SIZE; i++) {
-        if (*(int*)arraylist_op.pop(list) != array[DUMMY_SIZE - 1 - i]) {
-            return FALSE;
-        }
+        VERIFY(*(int*)arraylist_op.pop(list), array[DUMMY_SIZE - 1 - i]);
     }
-
-    if (!arraylist_op.empty(list)) {
-        return FALSE;
-    }
+    VERIFY(arraylist_op.empty(list), TRUE);
 
     arraylist_op.clear(list);
-    return TRUE;
 }
 
-int test_iterator(arraylist *list) {
+void test_iterator(arraylist *list) {
     int i;
     int array[DUMMY_SIZE];
 
@@ -81,13 +62,44 @@ int test_iterator(arraylist *list) {
 
     i = 0;
     while (arraylist_op.has_next(&iter)) {
-        if (*(int*)arraylist_op.next(&iter) != array[i++]) {
-            return FALSE;
-        }
+        VERIFY(*(int*)arraylist_op.next(&iter), array[i++]);
     }
 
     arraylist_op.clear(list);
-    return TRUE;
+}
+
+void test_set_and_swap(arraylist *list) {
+    int e1 = 3;
+    int e2 = 5;
+    int e3 = 7;
+
+    arraylist_op.append(list, &e1);
+    arraylist_op.append(list, &e2);
+
+    arraylist_op.set(list, 0, &e3);
+
+    VERIFY(*(int*)arraylist_op.get(list, 0), e3);
+
+    arraylist_op.swap(list, 0, 1);
+    VERIFY(*(int*)arraylist_op.get(list, 0), e2);
+
+    arraylist_op.clear(list);
+}
+
+void __test_foreach(void *e) {
+    VERIFY(*(int*)e, 1024);
+}
+
+void test_foreach(arraylist *list) {
+    int i;
+    int array[3] = {1024, 1024, 1024};
+    
+    for (i = 0; i < 3; i++) {
+        arraylist_op.append(list, &array[i]);
+    }
+    
+    arraylist_op.foreach(list, __test_foreach);
+    arraylist_op.clear(list);
 }
 
 int main(int argc, char** argv) {
@@ -95,10 +107,12 @@ int main(int argc, char** argv) {
     arraylist list;
     arraylist_op.init(&list);
 
-    VERIFY(test_clear_and_length(&list));
-    VERIFY(test_append_and_get(&list));
-    VERIFY(test_pop_and_empty(&list));
-    VERIFY(test_iterator(&list));
+    test_clear_and_length(&list);
+    test_append_and_get(&list);
+    test_pop_and_empty(&list);
+    test_iterator(&list);
+    test_set_and_swap(&list);
+    test_foreach(&list);
 
     arraylist_op.free(&list);
     return 0;

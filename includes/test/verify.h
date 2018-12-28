@@ -7,8 +7,8 @@
 #include "common.h"
 
 
-#define VERIFY(x)   \
-    if (x == FALSE) {  \
+#define VERIFY(x, y)   \
+    if (x != y) {  \
         printf("[%s:%d] TEST FAILURE\n", __FILE__, __LINE__); \
         exit(EXIT_FAILURE); \
     }
