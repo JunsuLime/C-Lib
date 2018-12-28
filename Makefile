@@ -7,7 +7,7 @@ INCLUDES = includes
 
 SAMPLE_SRC = $(SRC)/samples
 
-TARGETS = arraylist
+TARGETS = arraylist heap
 TARGET_OBJS := $(addprefix $(SRC)/, $(TARGETS))
 TARGET_OBJS := $(addsuffix .o, $(TARGET_OBJS))
 
@@ -21,7 +21,7 @@ $(SAMPLES): $(SAMPLE_OBJS) $(TARGET_OBJS)
 	mkdir -p $(BIN)
 	$(foreach TARGET, $(TARGETS),\
 		$(CC) $(CFLAGS) -I $(INCLUDES) -o $(BIN)/$(TARGET) \
-		$(SRC)/$(TARGET).o $(SAMPLE_SRC)/sample_$(TARGET).o;\
+		$(SRC)/*.o $(SAMPLE_SRC)/sample_$(TARGET).o;\
 		)
 
 .c.o:
