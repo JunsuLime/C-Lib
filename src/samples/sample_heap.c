@@ -1,4 +1,5 @@
 #include "heap.h"
+#include "common.h"
 #include "test/verify.h"
 
 #define DUMMY_SIZE 1024
@@ -25,7 +26,18 @@ void test_push_and_pop_and_empty(heap *heap) {
 }
 
 int compare(void *e1, void *e2) {
+    int v1, v2;
+    v1 = *(int*)e1;
+    v2 = *(int*)e2;
 
+    if (v1 < v2) {
+        return ASCENDING;
+    }
+    else if (v1 > v2) {
+        return DESCENDING;
+    }
+
+    return EQUAL;
 }
 
 int main() {

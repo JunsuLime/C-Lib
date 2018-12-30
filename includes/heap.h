@@ -3,6 +3,10 @@
 
 #include "arraylist.h"
 
+#define PARENT_IDX(c) (c - 1) / 2
+#define L_CHILD_IDX(p) 2 * p + 1
+#define R_CHILD_IDX(p) 2 * p + 2
+
 struct __heap {
     arraylist list;
     int (*compare)(void *e1, void *e2);
