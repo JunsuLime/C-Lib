@@ -7,7 +7,7 @@ INCLUDES = includes
 
 SAMPLE_SRC = $(SRC)/samples
 
-TARGETS = arraylist heap
+TARGETS = arraylist heap queue
 TARGET_OBJS := $(addprefix $(SRC)/, $(TARGETS))
 TARGET_OBJS := $(addsuffix .o, $(TARGET_OBJS))
 
