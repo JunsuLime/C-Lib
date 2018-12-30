@@ -9,7 +9,7 @@
 
 #define VERIFY(x, y)   \
     if (x != y) {  \
-        printf("[%s:%d] TEST FAILURE\n", __FILE__, __LINE__); \
+        printf("[%s:%d] TEST FAILURE: compare %d and %d\n", __FILE__, __LINE__, x, y); \
         exit(EXIT_FAILURE); \
     }
 
